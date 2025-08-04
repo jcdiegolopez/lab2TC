@@ -4,6 +4,7 @@ from flask import json
 
 class AFD:
     def __init__(self, estados, alfabeto, estado_inicial, estados_finales, transiciones):
+        self.data = {}
         self.estados = estados
         self.alfabeto = alfabeto
         self.estado_inicial = estado_inicial
@@ -12,12 +13,18 @@ class AFD:
         
     def readJson(self, file_path):
         with open(file_path, 'r') as file:
+            self.maquinas = json.load(file)["maquinas"]
+            
+    def loadNewAFN(self, number, file_path):
+        with open(file_path, 'r') as file:
             data = json.load(file)
-            self.estados = data['Q']
-            self.alfabeto = data['M']
-            self.estado_inicial = data['I']
-            self.estados_finales = data['F']
-            self.transiciones = data['T']
+            maquina = data["maquinas"][number]
+            self.estados = maquina['Q']
+            self.alfabeto = maquina['M']
+            self.estado_inicial = maquina['I']
+            self.estados_finales = maquina['F']
+            self.transiciones = maquina['T']
+    
             
     def transition(self, estado, simbolo):
         return [t[2] for t in self.transiciones if t[0] == estado and t[1] == simbolo]
